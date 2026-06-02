@@ -28,6 +28,32 @@ const crawlPage = async (req, res) => {
         `;
         
         const dbResult = await pool.query(insertQuery, [url, title, raw_content]);
+        const pageId = dbResult.rows[0].id;
+        
+        const chunks = [];
+        $("p").each((index, element) => {
+            const text = $(element).text().trim();
+
+            if (text) {
+                chunks.push(text);
+            }
+        });
+
+        for (let i = 0; i < chunks.length; i++) {
+
+            await pool.query(
+            `
+            INSERT INTO page_chunks
+            (page_id, chunk_index, chunk_text)
+            VALUES($1,$2,$3)
+            `,
+            [pageId, i, chunks[i]]
+            );
+
+        }
+        
+
+        
 
         res.status(201).json({
             message: "Page successfully crawled and saved!",
