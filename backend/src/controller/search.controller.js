@@ -9,12 +9,19 @@ const searchPages = async (req,res)=>{
         }
 
         const result = await pool.query(
-        `Select * from crawled_pages
-        where to_tsvector(raw_content)  @@ plainto_tsquery($1)
-        `,
-        [q]
+        `
+            SELECT id, url, title,
+            ts_rank(
+            to_tsvector(raw_content),
+            plainto_tsquery($1)
+            ) AS rank
+            FROM crawled_pages
+            WHERE to_tsvector(raw_content)
+            @@ plainto_tsquery($1)
+            ORDER BY rank DESC
+            `,
+            [q]
         );
-
         res.json(result.rows);
     }catch(error){
         console.error("Search Error:", error.message);
