@@ -1,6 +1,7 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 const pool = require("../config/db");
+const client = await pool.connect();
 
 const crawlPage = async (req, res) => {
     const { url } = req.body;
@@ -20,6 +21,10 @@ const crawlPage = async (req, res) => {
         
         const title = $('title').text().trim();
         const raw_content = $('body').text().replace(/\s+/g, ' ').trim();
+
+
+        await client.query("BEGIN");
+
 
         const insertQuery = `
             INSERT INTO crawled_pages (url, title, raw_content)
@@ -53,7 +58,8 @@ const crawlPage = async (req, res) => {
         }
         
 
-        
+        await client.query("COMMIT");
+
 
         res.status(201).json({
             message: "Page successfully crawled and saved!",
@@ -63,12 +69,15 @@ const crawlPage = async (req, res) => {
 
     } catch (error) {
         console.error("Crawling Error:", error.message);
-        
+        await client.query("ROLLBACK");
         if (error.code === '23505') {
             return res.status(409).json({ error: "This URL has already been crawled and saved." });
         }
 
         res.status(500).json({ error: "Failed to crawl the website." });
+    }
+    finally {
+        client.release();
     }
 };
 
