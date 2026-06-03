@@ -1,7 +1,6 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 const pool = require("../config/db");
-const client = await pool.connect();
 
 const crawlPage = async (req, res) => {
     const { url } = req.body;
@@ -9,6 +8,9 @@ const crawlPage = async (req, res) => {
     if (!url) {
         return res.status(400).json({ error: "Please provide a URL to crawl." });
     }
+
+    const client = await pool.connect();
+
 
     try {
 
