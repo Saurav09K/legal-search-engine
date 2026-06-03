@@ -31,10 +31,10 @@ const crawlPage = async (req, res) => {
         const pageId = dbResult.rows[0].id;
         
         const chunks = [];
-        $("p").each((index, element) => {
-            const text = $(element).text().trim();
-
-            if (text) {
+        $("p, h1, h2, h3, li").each((index, element) => {
+            const text = $(element).text().replace(/\s+/g, ' ').trim();
+            
+            if (text.split(' ').length > 5) {
                 chunks.push(text);
             }
         });
@@ -57,7 +57,8 @@ const crawlPage = async (req, res) => {
 
         res.status(201).json({
             message: "Page successfully crawled and saved!",
-            data: dbResult.rows[0]
+            data: dbResult.rows[0],
+            pageId: pageId,
         });
 
     } catch (error) {
