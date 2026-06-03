@@ -1,6 +1,7 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 const pool = require("../config/db");
+const generateEmbedding  = require("../utils/embedder");
 
 const crawlPage = async (req, res) => {
     const { url } = req.body;
@@ -34,7 +35,7 @@ const crawlPage = async (req, res) => {
             RETURNING id, title;
         `;
         
-        const dbResult = await pool.query(insertQuery, [url, title, raw_content]);
+        const dbResult = await client.query(insertQuery, [url, title, raw_content]);
         const pageId = dbResult.rows[0].id;
         
         const chunks = [];
@@ -48,13 +49,18 @@ const crawlPage = async (req, res) => {
 
         for (let i = 0; i < chunks.length; i++) {
 
-            await pool.query(
+            const chunkText=chunks[i];
+
+            const embedding = await generateEmbedding(chunkText);
+            const embeddingString = `[${embedding.join(",")}]`;
+
+            await client.query(
             `
             INSERT INTO page_chunks
-            (page_id, chunk_index, chunk_text)
-            VALUES($1,$2,$3)
+            (page_id, chunk_index, chunk_text,chunk_embedding)
+            VALUES($1,$2,$3,$4)
             `,
-            [pageId, i, chunks[i]]
+            [pageId, i, chunks[i], embeddingString]
             );
 
         }
