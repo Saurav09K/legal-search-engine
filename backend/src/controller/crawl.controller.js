@@ -39,7 +39,7 @@ const crawlPage = async (req, res) => {
         const pageId = dbResult.rows[0].id;
         
         const chunks = [];
-        $("p, h1, h2, h3, li").each((index, element) => {
+        $("p, h1, h2, h3, li, span").each((index, element) => {
             const text = $(element).text().replace(/\s+/g, ' ').trim();
             
             if (text.split(' ').length > 5) {
@@ -47,9 +47,13 @@ const crawlPage = async (req, res) => {
             }
         });
 
-        const embeddings = await Promise.all(
-            chunks.map(chunk => generateEmbedding(chunk))
-        );
+       const embeddings = [];
+
+        for (let i = 0; i < chunks.length; i++) {
+            console.log(`Generating embedding ${i + 1}/${chunks.length}`);
+            const embedding = await generateEmbedding(chunks[i]);
+            embeddings.push(embedding);
+        }
 
         for (let i = 0; i < chunks.length; i++) {
 
