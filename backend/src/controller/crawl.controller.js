@@ -47,12 +47,14 @@ const crawlPage = async (req, res) => {
             }
         });
 
+        const embeddings = await Promise.all(
+            chunks.map(chunk => generateEmbedding(chunk))
+        );
+
         for (let i = 0; i < chunks.length; i++) {
 
             const chunkText=chunks[i];
-
-            const embedding = await generateEmbedding(chunkText);
-            const embeddingString = `[${embedding.join(",")}]`;
+            const embeddingString = `[${embeddings[i].join(",")}]`;
 
             await client.query(
             `
@@ -60,7 +62,7 @@ const crawlPage = async (req, res) => {
             (page_id, chunk_index, chunk_text,chunk_embedding)
             VALUES($1,$2,$3,$4)
             `,
-            [pageId, i, chunks[i], embeddingString]
+            [pageId, i, chunkText, embeddingString]
             );
 
         }
