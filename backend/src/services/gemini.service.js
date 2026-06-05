@@ -9,22 +9,26 @@ const ai = new GoogleGenAI({
 const getAnswerFromGemini = async (question) => {
 
     const queryEmbedding = await generateEmbedding(question);
-    const embeddingString = JSON.stringify(queryEmbedding);
+    const embeddingString = `[${queryEmbedding.join(",")}]`;
 
     const searchQuery = `
         SELECT 
             pc.chunk_text,
             cp.title,
             cp.url,
-            1 - (pc.chunk_embedding <=> $1::vector) AS similarity_score
+            1 - (pc.chunk_embedding <=> $1::vector) AS similarity_score,
+            ts_rank(
+                 to_tsvector('english', pc.chunk_text),
+                 plainto_tsquery('english', $2)
+            ) AS keyword_score
         FROM page_chunks pc
         JOIN crawled_pages cp ON cp.id = pc.page_id
         WHERE pc.chunk_embedding IS NOT NULL
-        ORDER BY pc.chunk_embedding <=> $1::vector
+        ORDER BY similarity_score DESC, keyword_score DESC
         LIMIT 5;
     `;
 
-    const dbResult = await pool.query(searchQuery, [embeddingString]);
+    const dbResult = await pool.query(searchQuery, [embeddingString, question]);
     const chunks = dbResult.rows;
 
     if (chunks.length === 0) {
