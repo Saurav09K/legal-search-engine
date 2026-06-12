@@ -1,4 +1,4 @@
-# Search Engine
+# Legal Search Engine
 
 A MERN-style retrieval augmented search application. The backend crawls web pages or PDF documents, stores text chunks and Gemini embeddings in PostgreSQL, and exposes search and AI answer endpoints. The frontend is a Vite React app that lets users ask questions and view matching sources.
 
