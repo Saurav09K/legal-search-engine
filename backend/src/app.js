@@ -9,7 +9,7 @@ const askRoutes = require("./routes/ask.routes");
 const crawlPdfRoutes = require("./routes/crawlPdf.routes");
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "legal-search-engine-x4wft40e5-saurav09ks-projects.vercel.app",
 }));
 
 app.use(express.json());
