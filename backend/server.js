@@ -3,7 +3,7 @@ const app = require("./src/app");
 const pool = require("./src/config/db");
 const { redisConnection, crawlQueue } = require("./src/config/connection");
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 
 
 

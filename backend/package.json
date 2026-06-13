@@ -16,6 +16,7 @@
     "axios": "^1.16.1",
     "bullmq": "^5.78.0",
     "cheerio": "^1.2.0",
+    "concurrently": "^10.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
