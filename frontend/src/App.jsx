@@ -29,6 +29,7 @@ function App() {
 
     const encodedQuery = encodeURIComponent(trimmedQuery)
 
+    
     try {
       const searchPromise = fetch(`${API_BASE_URL}/api/search?q=${encodedQuery}`)
         .then(async (response) => {
