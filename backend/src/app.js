@@ -10,7 +10,7 @@ const crawlPdfRoutes = require("./routes/crawlPdf.routes");
 const chatRoutes = require("./routes/chat.routes");
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "https://legal-search-engine-x4wft40e5-saurav09ks-projects.vercel.app",
 }));
 
 app.use(express.json());
@@ -23,4 +23,3 @@ app.use("/api/chat", chatRoutes);
 
 module.exports = app;
 
-// "https://legal-search-engine-x4wft40e5-saurav09ks-projects.vercel.app",
