@@ -4,7 +4,7 @@ import SearchBar from './components/SearchBar';
 import AnswerBox from './components/AnswerBox';
 import SourcesList from './components/SourcesList';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 function App() {
   const [query, setQuery] = useState('');
