@@ -10,7 +10,9 @@ const crawlPdfRoutes = require("./routes/crawlPdf.routes");
 const chatRoutes = require("./routes/chat.routes");
 
 app.use(cors({
-    origin: "https://legal-search-engine-x4wft40e5-saurav09ks-projects.vercel.app",
+    origin: ["https://legal-search-engine-x4wft40e5-saurav09ks-projects.vercel.app",
+            "https://legal-search-engine-crojr9sdv-saurav09ks-projects.vercel.app"
+    ],
 }));
 
 app.use(express.json());
